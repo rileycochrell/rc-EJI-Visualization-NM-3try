@@ -85,8 +85,7 @@ rename_map = {
     "Mean_CBM": "RPL_CBM",
     "Mean_EJI_CBM": "RPL_EJI_CBM"
 }
-state_df.rename(columns=rename_map, inplace=True)
-county_df.rename(columns=rename_map, inplace=True)
+
 
 # Determine available metrics based on loaded data (so 2022 can lack CBM/EJI_CBM)
 BASE_METRICS = ["RPL_EJI", "RPL_EBM", "RPL_SVM", "RPL_HVM"]
@@ -401,7 +400,8 @@ try:
 except Exception as e:
     st.error(f"Error loading data for {selected_year}: {e}")
     st.stop()
-
+state_df.rename(columns=rename_map, inplace=True)
+county_df.rename(columns=rename_map, inplace=True)
 st.caption("Note: If a state or county does not appear in the dropdown, it means the CDC dataset for the selected year did not include data for that location.")
 
 selected_parameter = st.selectbox("View EJI data for:", parameter1)
