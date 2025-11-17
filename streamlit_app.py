@@ -79,7 +79,6 @@ def load_data_for_year(year: str):
     return state_df, county_df
 
 # Let user choose year (affects the main page content)
-selected_year = st.selectbox("Select data year:", AVAILABLE_YEARS, index=0)
 try:
     state_df, county_df = load_data_for_year(selected_year)
 except Exception as e:
@@ -401,6 +400,11 @@ Higher EJI values (closer to 1) indicate *higher cumulative burdens and vulnerab
 """)
 st.write("Use the dropdowns below to explore data for **New Mexico** or specific **counties**.")
 st.info("🔴 Rows highlighted in red represent areas with **Very High Concern/Burden (EJI ≥ 0.76)**.")
+# ------------------------------
+# Year Selection (below info, before parameter select)
+# ------------------------------
+years_available = ["2022", "2024"]
+selected_year = st.selectbox("Select Year:", years_available)
 
 selected_parameter = st.selectbox("View EJI data for:", parameter1)
 
