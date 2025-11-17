@@ -64,17 +64,6 @@ with st.sidebar:
 # ------------------------------
 AVAILABLE_YEARS = ["2024", "2022"]  # add more later as you add files
 
-@st.cache_data
-def load_data_for_year(year: str):
-    base = "https://github.com/rileycochrell/rc-EJI-Visualization-NM-3try/raw/refs/heads/main/data"
-    # default paths (must exist in your repo)
-    state_path = f"{base}/{year}/clean/{year}EJI_StateAverages_RPL.csv"
-    county_path = f"{base}/{year}/clean/{year}EJI_NewMexico_CountyMeans.csv"
-
-    state_df = pd.read_csv(state_path)
-    county_df = pd.read_csv(county_path)
-    return state_df, county_df
-
 # ------------------------------
 # Normalize column names (rename mean_* to RPL_*)
 # ------------------------------
@@ -391,14 +380,18 @@ Higher EJI values (closer to 1) indicate *higher cumulative burdens and vulnerab
 st.write("Use the dropdowns below to explore data for **New Mexico** or specific **counties**.")
 st.info("🔴 Rows highlighted in red represent areas with **Very High Concern/Burden (EJI ≥ 0.76)**.")
 selected_year = st.selectbox("Select data year:", AVAILABLE_YEARS, index=0)
+@st.cache_data
+def load_data_for_year(year: str):
+    base = "https://github.com/rileycochrell/rc-EJI-Visualization-NM-3try/raw/refs/heads/main/data"
+    # default paths (must exist in your repo)
+    state_path = f"{base}/{year}/clean/{year}EJI_StateAverages_RPL.csv"
+    county_path = f"{base}/{year}/clean/{year}EJI_NewMexico_CountyMeans.csv"
 
+    state_df = pd.read_csv(state_path)
+    county_df = pd.read_csv(county_path)
+    return state_df, county_df
 selected_parameter = st.selectbox("View EJI data for:", parameter1)
-# Let user choose year (affects the main page content)
-try:
-    state_df, county_df = load_data_for_year(selected_year)
-except Exception as e:
-    st.error(f"Error loading data for {selected_year}: {e}")
-    st.stop()
+
 if selected_parameter == "County":
     selected_county = st.selectbox("Select a New Mexico County:", counties)
     subset = county_df[county_df["County"] == selected_county]
