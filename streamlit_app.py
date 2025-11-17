@@ -91,14 +91,6 @@ rename_map = {
 BASE_METRICS = ["RPL_EJI", "RPL_EBM", "RPL_SVM", "RPL_HVM"]
 OPTIONAL_METRICS = ["RPL_CBM", "RPL_EJI_CBM"]  # added in 2024; absent in 2022
 
-metrics = BASE_METRICS.copy()
-
-# Only include optional metrics if the COUNTY file actually has them
-# (County is your primary dataset — so it must match)
-for m in OPTIONAL_METRICS:
-    if m in county_df.columns:
-        metrics.append(m)
-
 # Pretty names
 pretty = {
     "RPL_EJI": "Overall EJI",
@@ -402,6 +394,14 @@ except Exception as e:
     st.stop()
 state_df.rename(columns=rename_map, inplace=True)
 county_df.rename(columns=rename_map, inplace=True)
+metrics = BASE_METRICS.copy()
+
+# Only include optional metrics if the COUNTY file actually has them
+# (County is your primary dataset — so it must match)
+for m in OPTIONAL_METRICS:
+    if m in county_df.columns:
+        metrics.append(m)
+        
 st.caption("Note: If a state or county does not appear in the dropdown, it means the CDC dataset for the selected year did not include data for that location.")
 
 selected_parameter = st.selectbox("View EJI data for:", parameter1)
