@@ -405,13 +405,10 @@ st.write("Use the dropdowns below to explore data for **New Mexico** or specific
 st.info("🔴 Rows highlighted in red represent areas with **Very High Concern/Burden (EJI ≥ 0.76)**.")
 
 selected_parameter = st.selectbox("View EJI data for:", parameter1)
-st.caption(
-    "🔎 **Note:** If a state or county does not appear in the dropdown, it means the CDC dataset for the selected year did not include data for that location."
-)
-
 
 if selected_parameter == "County":
     selected_county = st.selectbox("Select a New Mexico County:", counties)
+    st.caption("Note: If a state or county does not appear in the dropdown, it means the CDC dataset for the selected year did not include data for that location.")
     subset = county_df[county_df["County"] == selected_county]
     if subset.empty:
         st.warning(f"No data found for {selected_county}.")
@@ -425,12 +422,15 @@ if selected_parameter == "County":
             compare_type = st.radio("Compare with:", ["State", "County"])
             if compare_type == "State":
                 comp_state = st.selectbox("Select state:", states)
+                st.caption("Note: If a state or county does not appear in the dropdown, it means the CDC dataset for the selected year did not include data for that location.")
+
                 comp_row = state_df[state_df["State"] == comp_state]
                 if not comp_row.empty:
                     comp_values = comp_row.iloc[0]
                     plot_comparison(county_values, comp_values, selected_county, comp_state)
             else:
                 comp_county = st.selectbox("Select county:", [c for c in counties if c != selected_county])
+                st.caption("Note: If a state or county does not appear in the dropdown, it means the CDC dataset for the selected year did not include data for that location.")
                 comp_row = county_df[county_df["County"] == comp_county]
                 if not comp_row.empty:
                     comp_values = comp_row.iloc[0]
@@ -450,12 +450,14 @@ else:
             compare_type = st.radio("Compare with:", ["State", "County"])
             if compare_type == "State":
                 comp_state = st.selectbox("Select state:", [s for s in states if s.lower() != "new mexico"])
+                st.caption("Note: If a state or county does not appear in the dropdown, it means the CDC dataset for the selected year did not include data for that location.")
                 comp_row = state_df[state_df["State"] == comp_state]
                 if not comp_row.empty:
                     comp_values = comp_row.iloc[0]
                     plot_comparison(nm_values, comp_values, "New Mexico", comp_state)
             else:
                 comp_county = st.selectbox("Select county:", counties)
+                st.caption("Note: If a state or county does not appear in the dropdown, it means the CDC dataset for the selected year did not include data for that location.")
                 comp_row = county_df[county_df["County"] == comp_county]
                 if not comp_row.empty:
                     comp_values = comp_row.iloc[0]
