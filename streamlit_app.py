@@ -394,13 +394,48 @@ Higher EJI values (closer to 1) indicate *higher cumulative burdens and vulnerab
 """)
 st.write("Use the dropdowns below to explore data for **New Mexico** or specific **counties**.")
 st.info("🔴 Rows highlighted in red represent areas with **Very High Concern/Burden (EJI ≥ 0.76)**.")
+
 # ------------------------------
 # Year Selection (below info, before parameter select)
 # ------------------------------
 years_available = ["2022", "2024"]
 selected_year = st.selectbox("Select Year:", years_available)
 
+# Load data for selected year
+try:
+    state_df, county_df = load_data_for_year(selected_year)
+except Exception as e:
+    st.error(f"Error loading data for {selected_year}: {e}")
+    st.stop()
+
+# Rename columns
+rename_map = {
+    "Mean_EJI": "RPL_EJI",
+    "Mean_EBM": "RPL_EBM",
+    "Mean_SVM": "RPL_SVM",
+    "Mean_HVM": "RPL_HVM",
+    "Mean_CBM": "RPL_CBM",
+    "Mean_EJI_CBM": "RPL_EJI_CBM"
+}
+state_df.rename(columns=rename_map, inplace=True)
+county_df.rename(columns=rename_map, inplace=True)
+
+# Determine available metrics dynamically
+BASE_METRICS = ["RPL_EJI", "RPL_EBM", "RPL_SVM", "RPL_HVM"]
+OPTIONAL_METRICS = ["RPL_CBM", "RPL_EJI_CBM"]
+metrics = BASE_METRICS.copy()
+for m in OPTIONAL_METRICS:
+    if m in county_df.columns or m in state_df.columns:
+        metrics.append(m)
+
+# Build dynamic dropdown lists (so 2022 still shows all locations, even if some data missing)
+counties = sorted(county_df["County"].dropna().unique())
+states = sorted(state_df["State"].dropna().unique())
+parameter1 = ["New Mexico", "County"]
+
+# Now show "View EJI data for" dropdown
 selected_parameter = st.selectbox("View EJI data for:", parameter1)
+
 
 if selected_parameter == "County":
     selected_county = st.selectbox("Select a New Mexico County:", counties)
