@@ -66,9 +66,6 @@ AVAILABLE_YEARS = ["2024", "2022"]  # add more later as you add files
 
 @st.cache_data
 def load_data_for_year(year: str):
-    """Load the state and county CSVs for the given year.
-       NOTE: GitHub repo path updated from ...-2try -> ...-3try per your request.
-    """
     base = "https://github.com/rileycochrell/rc-EJI-Visualization-NM-3try/raw/refs/heads/main/data"
     # default paths (must exist in your repo)
     state_path = f"{base}/{year}/clean/{year}EJI_StateAverages_RPL.csv"
@@ -79,7 +76,6 @@ def load_data_for_year(year: str):
     return state_df, county_df
 
 # Let user choose year (affects the main page content)
-selected_year = st.selectbox("Select data year:", AVAILABLE_YEARS, index=0)
 try:
     state_df, county_df = load_data_for_year(selected_year)
 except Exception as e:
@@ -401,6 +397,7 @@ Higher EJI values (closer to 1) indicate *higher cumulative burdens and vulnerab
 """)
 st.write("Use the dropdowns below to explore data for **New Mexico** or specific **counties**.")
 st.info("🔴 Rows highlighted in red represent areas with **Very High Concern/Burden (EJI ≥ 0.76)**.")
+selected_year = st.selectbox("Select data year:", AVAILABLE_YEARS, index=0)
 
 selected_parameter = st.selectbox("View EJI data for:", parameter1)
 
