@@ -119,9 +119,6 @@ dataset2_rainbows = {
     "RPL_EJI_CBM": "#f17cb0"
 }
 
-counties = sorted(county_df["County"].dropna().unique())
-states = sorted(state_df["State"].dropna().unique())
-parameter1 = ["New Mexico", "County"]
 
 # ------------------------------
 # Helper functions
@@ -401,7 +398,10 @@ metrics = BASE_METRICS.copy()
 for m in OPTIONAL_METRICS:
     if m in county_df.columns:
         metrics.append(m)
-        
+counties = sorted(county_df["County"].dropna().unique())
+states = sorted(state_df["State"].dropna().unique())
+parameter1 = ["New Mexico", "County"]
+
 st.caption("Note: If a state or county does not appear in the dropdown, it means the CDC dataset for the selected year did not include data for that location.")
 
 selected_parameter = st.selectbox("View EJI data for:", parameter1)
