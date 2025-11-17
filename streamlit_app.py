@@ -1,7 +1,3 @@
-# streamlit_app.py
-# TEAM 23: Environmental Justice in New Mexico — EJI Visualization (3try)
-# NOTE: This file is based on your "2try" working code but updated and all "2try" -> "3try".
-
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -11,7 +7,7 @@ import plotly.graph_objects as go
 # Page Config
 # ------------------------------
 st.set_page_config(
-    page_title="TEAM 23: Environmental Justice in New Mexico — 📊 EJI Visualization (3try)",
+    page_title="TEAM 23: Environmental Justice in New Mexico — 📊 EJI Visualization",
     page_icon="🌎",
     layout="wide"
 )
