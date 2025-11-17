@@ -78,12 +78,6 @@ def load_data_for_year(year: str):
     county_df = pd.read_csv(county_path)
     return state_df, county_df
 
-# Let user choose year (affects the main page content)
-try:
-    state_df, county_df = load_data_for_year(selected_year)
-except Exception as e:
-    st.error(f"Error loading data for {selected_year}: {e}")
-    st.stop()
 
 # ------------------------------
 # Normalize column names (rename mean_* to RPL_*)
