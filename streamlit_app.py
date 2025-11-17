@@ -11,7 +11,6 @@ import plotly.graph_objects as go
 # Page Config
 # ------------------------------
 st.set_page_config(
-    page_title="TEAM 23: Environmental Justice in New Mexico — 📊 EJI Visualization",
     page_title="TEAM 23: Environmental Justice in New Mexico — 📊 EJI Visualization (3try)",
     page_icon="🌎",
     layout="wide"
@@ -32,7 +31,6 @@ div[data-testid="stLogoSpacer"] {
     height: 100%;
     padding-top: 40px;
 }
-
 div[data-testid="stLogoSpacer"]::before {
     content: "TEAM 23:";
     font-size: 30px;
@@ -40,7 +38,6 @@ div[data-testid="stLogoSpacer"]::before {
     white-space: nowrap;
     margin-bottom: 5px;
 }
-
 div[data-testid="stLogoSpacer"]::after {
     content: "🌎 Environmental Justice in New Mexico";
     text-align: center;
@@ -63,17 +60,11 @@ with st.sidebar:
     st.page_link("pages/2_EJI_Scale_and_Categories.py", label="What Does the EJI Mean?", icon="🌡️")
 
 # ------------------------------
-# Load Data
 # Year selection and data loading
 # ------------------------------
 AVAILABLE_YEARS = ["2024", "2022"]  # add more later as you add files
 
 @st.cache_data
-def load_data():
-    state_url = "https://github.com/rileycochrell/rc-EJI-Visualization-NM-2try/raw/refs/heads/main/data/2024/clean/2024EJI_StateAverages_RPL.csv"
-    county_url = "https://github.com/rileycochrell/rc-EJI-Visualization-NM-2try/raw/refs/heads/main/data/2024/clean/2024EJI_NewMexico_CountyMeans.csv"
-    state_df = pd.read_csv(state_url)
-    county_df = pd.read_csv(county_url)
 def load_data_for_year(year: str):
     """Load the state and county CSVs for the given year.
        NOTE: GitHub repo path updated from ...-2try -> ...-3try per your request.
@@ -90,10 +81,8 @@ def load_data_for_year(year: str):
 # Let user choose year (affects the main page content)
 selected_year = st.selectbox("Select data year:", AVAILABLE_YEARS, index=0)
 try:
-    state_df, county_df = load_data()
     state_df, county_df = load_data_for_year(selected_year)
 except Exception as e:
-    st.error(f"Error loading data: {e}")
     st.error(f"Error loading data for {selected_year}: {e}")
     st.stop()
 
@@ -111,10 +100,6 @@ rename_map = {
 state_df.rename(columns=rename_map, inplace=True)
 county_df.rename(columns=rename_map, inplace=True)
 
-metrics = ["RPL_EJI", "RPL_EBM", "RPL_SVM", "RPL_HVM", "RPL_CBM", "RPL_EJI_CBM"]
-counties = sorted(county_df["County"].dropna().unique())
-states = sorted(state_df["State"].dropna().unique())
-parameter1 = ["New Mexico", "County"]
 # Determine available metrics based on loaded data (so 2022 can lack CBM/EJI_CBM)
 BASE_METRICS = ["RPL_EJI", "RPL_EBM", "RPL_SVM", "RPL_HVM"]
 OPTIONAL_METRICS = ["RPL_CBM", "RPL_EJI_CBM"]  # added in 2024; maybe absent in 2022
@@ -144,7 +129,6 @@ dataset1_rainbows = {
     "RPL_CBM": "#469990",
     "RPL_EJI_CBM": "#801650"
 }
-
 dataset2_rainbows = {
     "RPL_EJI": "#b88be1",
     "RPL_EBM": "#D2B48C",
@@ -159,10 +143,8 @@ states = sorted(state_df["State"].dropna().unique())
 parameter1 = ["New Mexico", "County"]
 
 # ------------------------------
-# Helper Functions
 # Helper functions
 # ------------------------------
-def get_contrast_color(hex_color):
 def get_contrast_color(hex_color: str):
     """Return 'black' or 'white' for readable text on hex_color background."""
     try:
@@ -172,15 +154,10 @@ def get_contrast_color(hex_color: str):
     brightness = (0.299*rgb[0] + 0.587*rgb[1] + 0.114*rgb[2])
     return "black" if brightness > 150 else "white"
 
-# No Data font is always black because theme is locked to light
-def get_theme_color():
 # Lock "No Data" label font color to black because app theme is locked to light
 def no_data_label_color():
     return "black"
 
-# ------------------------------
-# Table Display
-# ------------------------------
 def display_colored_table_html(df, color_map, pretty_map, title=None):
     """Render an HTML table with header cell colors from color_map and data cells.
        Currently highlights entire row if any cell >= 0.76; if you want per-cell highlighting,
@@ -194,8 +171,6 @@ def display_colored_table_html(df, color_map, pretty_map, title=None):
 
     header_html = "<tr>"
     for col in df_display.columns:
-        orig = [k for k,v in pretty_map.items() if v == col]
-        color = color_map.get(orig[0], "#FFFFFF") if orig else "#FFFFFF"
         # find original metric key for this pretty column (if present)
         orig_keys = [k for k, v in pretty_map.items() if v == col]
         color = color_map.get(orig_keys[0], "#FFFFFF") if orig_keys else "#FFFFFF"
@@ -205,7 +180,6 @@ def display_colored_table_html(df, color_map, pretty_map, title=None):
 
     body_html = ""
     for _, row in df_display.iterrows():
-        highlight = any([(isinstance(v, (int,float)) and v >= 0.76) or (isinstance(v, str) and "very high" in v.lower()) for v in row])
         # if any numeric cell >= 0.76 (Very High), highlight whole row (existing behavior)
         highlight = any([(isinstance(v, (int, float)) and v >= 0.76) for v in row])
         row_style = "background-color:#ffb3b3;" if highlight else ""
@@ -219,7 +193,6 @@ def display_colored_table_html(df, color_map, pretty_map, title=None):
     st.markdown(table_html, unsafe_allow_html=True)
 
 # ------------------------------
-# Graph Functions
 # Plot utilities
 # ------------------------------
 NO_DATA_HEIGHT = 0.5
@@ -234,9 +207,6 @@ def build_customdata(area_label, values):
             out.append([area_label, f"{v:.3f}"])
     return out
 
-def build_texts_and_colors(colors, area_label, values):
-    texts, fonts = [], []
-    for c, v in zip(colors, values):
 def build_texts_and_colors(colors_map, area_label, values):
     texts = []
     fonts = []
@@ -245,7 +215,6 @@ def build_texts_and_colors(colors_map, area_label, values):
         if pd.isna(v):
             # label shown on the no-data overlay; font chosen so it is visible in light theme
             texts.append("No Data")
-            fonts.append(get_theme_color())  # always black
             fonts.append(no_data_label_color())
         else:
             val_str = f"{v:.3f}"
@@ -257,8 +226,6 @@ def build_texts_and_colors(colors_map, area_label, values):
 # Graph functions
 # ------------------------------
 def plot_single_chart(title, data_values, area_label=None):
-    vals = np.array([np.nan if pd.isna(v) else float(v) for v in data_values.values])
-    color_list = [dataset1_rainbows[m] for m in metrics]
     # data_values: pandas Series containing metric values (may have NaNs)
     vals = np.array([np.nan if pd.isna(v) else float(v) for v in data_values.loc[metrics].values])
     # colors list aligned with metrics
@@ -266,7 +233,6 @@ def plot_single_chart(title, data_values, area_label=None):
 
     has_y = [v if not pd.isna(v) else 0 for v in vals]
     nodata_y = [NO_DATA_HEIGHT if pd.isna(v) else 0 for v in vals]
-    texts, fonts = build_texts_and_colors(color_list, area_label, vals)
 
     texts, fonts = build_texts_and_colors(dataset1_rainbows, area_label, vals)
     customdata = build_customdata(area_label, vals)
@@ -293,11 +259,9 @@ def plot_single_chart(title, data_values, area_label=None):
         x=[pretty[m] for m in metrics],
         y=nodata_y,
         marker=dict(color="white", pattern=NO_DATA_PATTERN),
-        text=[f"{area_label}<br>No Data" if pd.isna(v) else "" for v in vals],
         text=nodata_text,
         texttemplate="%{text}",
         textposition="outside",
-        textfont=dict(size=10, color=get_theme_color()),
         textfont=dict(size=10, color=no_data_label_color()),
         customdata=customdata,
         hovertemplate="%{x}<br>%{customdata[0]}<br>%{customdata[1]}<extra></extra>",
@@ -309,24 +273,18 @@ def plot_single_chart(title, data_values, area_label=None):
         yaxis=dict(title="Percentile Rank Value", range=[0, 1], dtick=0.25),
         xaxis_title="Environmental Justice Index Metric",
         barmode="overlay",
-        legend=dict(orientation="h", y=-0.2, x=0.5, xanchor="center")
         legend=dict(orientation="h", y=-0.2, x=0.5, xanchor="center"),
         template="plotly_white"
     )
-    st.plotly_chart(fig, width="stretch")
 
     st.plotly_chart(fig, use_container_width=True)
 
 def plot_comparison(data1, data2, label1, label2):
-    vals1 = np.array([np.nan if pd.isna(v) else float(v) for v in data1.values])
-    vals2 = np.array([np.nan if pd.isna(v) else float(v) for v in data2.values])
     # Both data1 and data2: pandas Series (metric values). We show grouped bars.
     vals1 = np.array([np.nan if pd.isna(v) else float(v) for v in data1.loc[metrics].values])
     vals2 = np.array([np.nan if pd.isna(v) else float(v) for v in data2.loc[metrics].values])
 
     metric_names = [pretty[m] for m in metrics]
-    colors1 = [dataset1_rainbows[m] for m in metrics]
-    colors2 = [dataset2_rainbows[m] for m in metrics]
     colors1 = [dataset1_rainbows.get(m, "#888888") for m in metrics]
     colors2 = [dataset2_rainbows.get(m, "#cccccc") for m in metrics]
 
@@ -334,8 +292,6 @@ def plot_comparison(data1, data2, label1, label2):
     nodata1_y = [NO_DATA_HEIGHT if pd.isna(v) else 0 for v in vals1]
     has2_y = [v if not pd.isna(v) else 0 for v in vals2]
     nodata2_y = [NO_DATA_HEIGHT if pd.isna(v) else 0 for v in vals2]
-    texts1, fonts1 = build_texts_and_colors(colors1, label1, vals1)
-    texts2, fonts2 = build_texts_and_colors(colors2, label2, vals2)
 
     texts1, fonts1 = build_texts_and_colors(dataset1_rainbows, label1, vals1)
     texts2, fonts2 = build_texts_and_colors(dataset2_rainbows, label2, vals2)
@@ -344,30 +300,6 @@ def plot_comparison(data1, data2, label1, label2):
     wingardium_leviosAH = build_customdata(label2, vals2)
 
     fig = go.Figure()
-    # Dataset 1
-    fig.add_trace(go.Bar(x=metric_names, y=has1_y, marker_color=colors1, offsetgroup=0, width=0.35,
-                         text=texts1, texttemplate="%{text}", textposition="inside",
-                         textfont=dict(size=10, color=fonts1),
-                         customdata=wingardium_leviOsa, hovertemplate="%{x}<br>%{customdata[0]}<br>%{customdata[1]}<extra></extra>",
-                         showlegend=False))
-    fig.add_trace(go.Bar(x=metric_names, y=nodata1_y, marker=dict(color="white", pattern=NO_DATA_PATTERN),
-                         offsetgroup=0, width=0.35,
-                         text=[f"{label1}<br>No Data" if pd.isna(v) else "" for v in vals1],
-                         textposition="outside", textfont=dict(size=10, color=get_theme_color()),
-                         customdata=wingardium_leviOsa, hovertemplate="%{x}<br>%{customdata[0]}<br>%{customdata[1]}<extra></extra>",
-                         showlegend=False))
-    # Dataset 2
-    fig.add_trace(go.Bar(x=metric_names, y=has2_y, marker_color=colors2, offsetgroup=1, width=0.35,
-                         text=texts2, texttemplate="%{text}", textposition="inside",
-                         textfont=dict(size=10, color=fonts2),
-                         customdata=wingardium_leviosAH, hovertemplate="%{x}<br>%{customdata[0]}<br>%{customdata[1]}<extra></extra>",
-                         showlegend=False))
-    fig.add_trace(go.Bar(x=metric_names, y=nodata2_y, marker=dict(color="white", pattern=NO_DATA_PATTERN),
-                         offsetgroup=1, width=0.35,
-                         text=[f"{label2}<br>No Data" if pd.isna(v) else "" for v in vals2],
-                         textposition="outside", textfont=dict(size=10, color=get_theme_color()),
-                         customdata=wingardium_leviosAH, hovertemplate="%{x}<br>%{customdata[0]}<br>%{customdata[1]}<extra></extra>",
-                         showlegend=False))
 
     # Dataset 1 real
     fig.add_trace(go.Bar(
@@ -439,8 +371,6 @@ def plot_comparison(data1, data2, label1, label2):
     # Comparison table for display
     compare_table = pd.DataFrame({
         "Metric": [pretty[m] for m in metrics],
-        label1: data1.values,
-        label2: data2.values
         label1: data1.loc[metrics].values,
         label2: data2.loc[metrics].values
     }).set_index("Metric").T
@@ -453,11 +383,9 @@ def plot_comparison(data1, data2, label1, label2):
         title=f"EJI Metric Comparison — {label1} vs {label2}",
         yaxis=dict(title="Percentile Rank Value", range=[0, 1], dtick=0.25),
         xaxis_title="Environmental Justice Index Metric",
-        legend=dict(orientation="h", y=-0.2, x=0.5, xanchor="center")
         legend=dict(orientation="h", y=-0.2, x=0.5, xanchor="center"),
         template="plotly_white"
     )
-    st.plotly_chart(fig, width="stretch")
 
     st.plotly_chart(fig, use_container_width=True)
     st.caption("_Note: darker bars represent the first dataset; lighter bars represent the second dataset._")
@@ -465,7 +393,6 @@ def plot_comparison(data1, data2, label1, label2):
 # ------------------------------
 # Main App Layout
 # ------------------------------
-st.title("📊 Environmental Justice Index Visualization (New Mexico)")
 st.title("📊 Environmental Justice Index Visualization (New Mexico) — 3try")
 st.info("""
 **Interpreting the EJI Score:**  
@@ -483,11 +410,8 @@ if selected_parameter == "County":
     if subset.empty:
         st.warning(f"No data found for {selected_county}.")
     else:
-        st.subheader(f"⚖️ EJI Data for {selected_county}")
         st.subheader(f"⚖️ EJI Data for {selected_county} — {selected_year}")
         display_colored_table_html(subset, dataset1_rainbows, pretty)
-        county_values = subset[metrics].iloc[0]
-        plot_single_chart(f"EJI Metrics — {selected_county}", county_values, area_label=selected_county)
         county_values = subset.iloc[0]  # series with columns (we'll refer to metrics)
         plot_single_chart(f"EJI Metrics — {selected_county} ({selected_year})", county_values, area_label=selected_county)
 
@@ -497,14 +421,12 @@ if selected_parameter == "County":
                 comp_state = st.selectbox("Select state:", states)
                 comp_row = state_df[state_df["State"] == comp_state]
                 if not comp_row.empty:
-                    comp_values = comp_row[metrics].iloc[0]
                     comp_values = comp_row.iloc[0]
                     plot_comparison(county_values, comp_values, selected_county, comp_state)
             else:
                 comp_county = st.selectbox("Select county:", [c for c in counties if c != selected_county])
                 comp_row = county_df[county_df["County"] == comp_county]
                 if not comp_row.empty:
-                    comp_values = comp_row[metrics].iloc[0]
                     comp_values = comp_row.iloc[0]
                     plot_comparison(county_values, comp_values, selected_county, comp_county)
 
@@ -513,11 +435,8 @@ else:
     if nm_row.empty:
         st.warning("No New Mexico data found.")
     else:
-        st.subheader("⚖️ New Mexico Statewide EJI Scores")
         st.subheader(f"⚖️ New Mexico Statewide EJI Scores — {selected_year}")
         display_colored_table_html(nm_row, dataset1_rainbows, pretty)
-        nm_values = nm_row[metrics].iloc[0]
-        plot_single_chart("EJI Metrics — New Mexico", nm_values, area_label="New Mexico")
         nm_values = nm_row.iloc[0]
         plot_single_chart(f"EJI Metrics — New Mexico ({selected_year})", nm_values, area_label="New Mexico")
 
@@ -527,14 +446,12 @@ else:
                 comp_state = st.selectbox("Select state:", [s for s in states if s.lower() != "new mexico"])
                 comp_row = state_df[state_df["State"] == comp_state]
                 if not comp_row.empty:
-                    comp_values = comp_row[metrics].iloc[0]
                     comp_values = comp_row.iloc[0]
                     plot_comparison(nm_values, comp_values, "New Mexico", comp_state)
             else:
                 comp_county = st.selectbox("Select county:", counties)
                 comp_row = county_df[county_df["County"] == comp_county]
                 if not comp_row.empty:
-                    comp_values = comp_row[metrics].iloc[0]
                     comp_values = comp_row.iloc[0]
                     plot_comparison(nm_values, comp_values, "New Mexico", comp_county)
 
