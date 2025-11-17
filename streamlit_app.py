@@ -391,7 +391,7 @@ def plot_comparison(data1, data2, label1, label2):
 # ------------------------------
 # Main App Layout
 # ------------------------------
-st.title("📊 Environmental Justice Index Visualization (New Mexico) — 3try")
+st.title("📊 Environmental Justice Index Visualization (New Mexico)")
 st.info("""
 **Interpreting the EJI Score:**  
 Lower EJI values (closer to 0) indicate *lower cumulative environmental and social burdens* — generally a good outcome.  
