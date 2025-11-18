@@ -150,7 +150,7 @@ def plot_year_comparison_with_arrows(y1_values, y2_values, label1, label2, metri
 
     # Prepare arrows and labels
     diffs = vals2 - vals1
-    arrow_annotations = []
+    weaponized_arrows_of_truth = []
     for i, (v1, v2, diff) in enumerate(zip(vals1, vals2, diffs)):
         if np.isnan(v1) or np.isnan(v2) or diff==0:
             continue
@@ -158,7 +158,7 @@ def plot_year_comparison_with_arrows(y1_values, y2_values, label1, label2, metri
         y_base = v1 if diff > 0 else v2
         color = "red" if diff>0 else "green"
         text = f"{abs(diff):.3f}"
-        arrow_annotations.append(dict(
+        weaponized_arrows_of_truth.append(dict(
             x=metric_names[i], y=y_base,
             ax=0, ay=0,
             xref="x", yref="y",
@@ -191,9 +191,51 @@ def plot_year_comparison_with_arrows(y1_values, y2_values, label1, label2, metri
         yaxis=dict(title="Percentile Rank Value", range=[0, 1]),
         xaxis_title="EJI Metric",
         legend=dict(orientation="h", y=-0.2, x=0.5, xanchor="center"),
-        annotations=arrow_annotations
+        annotations=weaponized_arrows_of_truth
     )
     st.plotly_chart(fig, width='stretch')
+
+def weaponized_arrows_of_truth(metrics, y1_values, y2_values):
+    annotations = []
+
+    for i, metric in enumerate(metrics):
+        y_pos = i
+
+        v1 = float(y1_values[metric]) if not pd.isna(y1_values[metric]) else None
+        v2 = float(y2_values[metric]) if not pd.isna(y2_values[metric]) else None
+
+        if v1 is None or v2 is None:
+            continue
+
+        if v2 > v1:
+            start_x = v1
+            end_x = v2
+            arrow_color = "green"
+        else:
+            start_x = v1
+            end_x = v2
+            arrow_color = "red"
+
+        annotations.append(
+            dict(
+                x=start_x,
+                y=y_pos,
+                ax=end_x,
+                ay=y_pos,
+                xref="x",
+                yref="y",
+                axref="x",
+                ayref="y",
+                showarrow=True,
+                arrowhead=3,
+                arrowsize=1.2,
+                arrowcolor=arrow_color,
+                opacity=0.9,
+                standoff=2,
+            )
+        )
+
+    return annotations
 
 # ------------------------------
 # Main App Logic
