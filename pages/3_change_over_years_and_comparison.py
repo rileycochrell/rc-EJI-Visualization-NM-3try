@@ -148,26 +148,26 @@ def weaponized_arrows_of_truth(metrics, y1_values, y2_values):
         v1 = y1_values[metric]
         v2 = y2_values[metric]
 
-        # Skip missing
         if pd.isna(v1) or pd.isna(v2):
             continue
 
         v1 = float(v1)
         v2 = float(v2)
 
-        # Always point LEFT → RIGHT from v1 to v2
+        # Arrow ALWAYS points from Year 1 → Year 2
         start_x = v1
         end_x = v2
+        y_pos = i
 
-        # Colors still encode improvement/worsening
+        # Color logic (unchanged)
         color = "red" if v2 > v1 else "green"
 
         annotations.append(
             dict(
                 x=start_x,
-                y=i,
+                y=y_pos,
                 ax=end_x,
-                ay=i,
+                ay=y_pos,
                 xref="x",
                 yref="y",
                 axref="x",
@@ -177,8 +177,7 @@ def weaponized_arrows_of_truth(metrics, y1_values, y2_values):
                 arrowsize=1.2,
                 arrowcolor=color,
                 arrowwidth=2,
-                standoff=2,
-                opacity=0.95
+                opacity=0.95,
             )
         )
 
@@ -186,51 +185,53 @@ def weaponized_arrows_of_truth(metrics, y1_values, y2_values):
 
 
 # ------------------------------
-# Updated plot function (VERTICAL)
+# Updated plot function (horizontal bars with arrows)
 # ------------------------------
 def plot_year_comparison_with_arrows(y1_values, y2_values, label1, label2, metrics):
     vals1 = np.array([np.nan if pd.isna(v) else float(v) for v in y1_values])
-    vals2 = np.array([np.nan if pd.isna(v) else float(v) for v in y2_values])
+    vals2 = np.array([np.nan if pd.isna(v) else float(v) else "No Data" for v in y2_values])
     metric_names = [pretty[m] for m in metrics]
     colors1 = [dataset_year1_rainbows[m] for m in metrics]
     colors2 = [dataset_year2_rainbows[m] for m in metrics]
 
     fig = go.Figure()
 
-    # YEAR 1
+    # Bars
     fig.add_trace(go.Bar(
-        x=list(range(len(metrics))),
-        y=vals1,
+        x=vals1,
+        y=list(range(len(metrics))),
+        orientation="h",
         name=label1,
         marker_color=colors1,
         text=[f"{v:.3f}" if not np.isnan(v) else "No Data" for v in vals1],
         textposition="outside"
     ))
 
-    # YEAR 2
     fig.add_trace(go.Bar(
-        x=list(range(len(metrics))),
-        y=vals2,
+        x=vals2,
+        y=list(range(len(metrics))),
+        orientation="h",
         name=label2,
         marker_color=colors2,
         text=[f"{v:.3f}" if not np.isnan(v) else "No Data" for v in vals2],
         textposition="outside"
     ))
 
+    # Layout
     fig.update_layout(
-        xaxis=dict(
+        yaxis=dict(
             tickmode="array",
             tickvals=list(range(len(metrics))),
             ticktext=metric_names
         ),
-        yaxis=dict(range=[0, 1]),
+        xaxis=dict(range=[0, 1]),
         barmode="group",
         title=f"EJI Metrics Comparison: {label1} vs {label2}",
         annotations=weaponized_arrows_of_truth(metrics, y1_values, y2_values),
-        height=550
+        height=500
     )
 
-    st.plotly_chart(fig, width='stretch')
+    st.plotly_chart(fig, width="stretch")
 
 # ------------------------------
 # Main App Logic
