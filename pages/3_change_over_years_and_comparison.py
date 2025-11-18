@@ -139,7 +139,7 @@ def display_colored_table_html(df, color_map, pretty_map, title=None):
     st.markdown(table_html, unsafe_allow_html=True)
 
 # ------------------------------
-# Beautiful, functional arrows
+# Beautiful, functional arrows hopefully...
 # ------------------------------
 def weaponized_arrows_of_truth(metrics, y1_values, y2_values):
     annotations = []
@@ -155,18 +155,14 @@ def weaponized_arrows_of_truth(metrics, y1_values, y2_values):
         v1 = float(v1)
         v2 = float(v2)
 
-        # Which bar is shorter?
-        if v2 > v1:
-            # year2 increased → red arrow going UP
-            start_y = v1
-            end_y = v2
-            color = "red"
-        else:
-            # year2 improved (lower) → green arrow going DOWN
-            start_y = v1
-            end_y = v2
-            color = "green"
+        # Always point LEFT → RIGHT from v1 to v2
+        start_x = v1
+        end_x = v2
 
+        # Colors still encode improvement/worsening
+        color = "red" if v2 > v1 else "green"
+
+        
         annotations.append(
             dict(
                 x=i,          # x position = metric column
