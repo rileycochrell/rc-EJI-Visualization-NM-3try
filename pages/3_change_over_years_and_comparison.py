@@ -156,22 +156,20 @@ def weaponized_arrows_of_truth(metrics, y1_values, y2_values):
         v1 = float(v1)
         v2 = float(v2)
 
-        # Vertical chart:
-        # x = category (metric name)
-        # y = numeric value
-        head_y = v2   # arrow head = Year 2
-        tail_y = v1   # arrow tail = Year 1
+        # Compute signed difference (Year2 - Year1)
+        diff = v2 - v1
+        diff_text = f"{diff:+.3f}"  # + sign for positive, - for negative
 
-        color = "red" if v2 > v1 else "green"
-        diff_text = f"{abs(v2 - v1):.3f}"
+        color = "red" if diff > 0 else "green"
 
+        # Vertical arrow from Year1 → Year2
         annotations.append(dict(
             x=metric_name,
-            y=head_y,         # arrow head
+            y=v2,          # arrow head = Year2
+            ax=metric_name,
+            ay=v1,          # arrow tail = Year1
             xref="x",
             yref="y",
-            ax=metric_name,
-            ay=tail_y,        # arrow tail
             axref="x",
             ayref="y",
             showarrow=True,
@@ -180,9 +178,11 @@ def weaponized_arrows_of_truth(metrics, y1_values, y2_values):
             arrowwidth=2,
             arrowcolor=color,
             opacity=0.95,
+            # Position label to the right of arrow
             text=diff_text,
-            font=dict(color=color, size=11),
-            yshift=10
+            font=dict(color=color, size=12),
+            xshift=-15 if diff > 0 else 15,     # move label to the right side
+            yshift=0       # centered vertically on arrow
         ))
 
     return annotations
