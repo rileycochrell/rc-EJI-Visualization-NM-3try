@@ -299,20 +299,28 @@ if selected_parameter=="County":
         y2_values = subset2[metrics].iloc[0]
         location1_name = selected_county
         # ---------------- Table ----------------
-        table_change = pd.DataFrame({
-            baseline_year: y1_values[metrics].values,
-            other_year: y2_values[metrics].values
-        }, index=[metrics]).T  # metrics as columns
-        
-        # Reset index to have years as rows
-        table_df_reset = table_change.reset_index()
-        table_df_reset.rename(columns={'index': f'{location1_name}'}, inplace=True)
+        # Build table with first column = location name, rows = years
+        table_df = pd.DataFrame(
+            data=[
+                [baseline_year] + [y1_values[m] for m in metrics],
+                [other_year] + [y2_values[m] for m in metrics]
+            ],
+            columns=[location1_name] + metrics
+        )
         
         st.markdown(f"### {location1_name} – Year Comparison Table")
+        
+        # Build a color map including first column (default white)
+        full_color_map = {location1_name: "#FFFFFF"}  # first column
+        full_color_map.update(dataset_year1_rainbows)  # metrics
+        
+        # Build a pretty map including first column
+        full_pretty_map = {location1_name: location1_name, **pretty}
+        
         display_colored_table_html(
-            table_df_reset,
-            color_map=dataset_year1_rainbows,  # use year1 colors for metric headers
-            pretty_map={**{f'{location1_name}': f'{location1_name}'}, **pretty}  # include first column in pretty map
+            table_df,
+            color_map=full_color_map,
+            pretty_map=full_pretty_map
         )
 
         plot_year_comparison_with_arrows(y1_values, y2_values, baseline_year, other_year, metrics, location1_name)
@@ -326,20 +334,28 @@ else:
         y2_values = nm_row2[metrics].iloc[0]
         location1_name = "New Mexico"
         # ---------------- Table ----------------
-        table_change = pd.DataFrame({
-            baseline_year: y1_values[metrics].values,
-            other_year: y2_values[metrics].values
-        }, index=[metrics]).T  # metrics as columns
-        
-        # Reset index to have years as rows
-        table_df_reset = table_change.reset_index()
-        table_df_reset.rename(columns={'index': f'{location1_name}'}, inplace=True)
+        # Build table with first column = location name, rows = years
+        table_df = pd.DataFrame(
+            data=[
+                [baseline_year] + [y1_values[m] for m in metrics],
+                [other_year] + [y2_values[m] for m in metrics]
+            ],
+            columns=[location1_name] + metrics
+        )
         
         st.markdown(f"### {location1_name} – Year Comparison Table")
+        
+        # Build a color map including first column (default white)
+        full_color_map = {location1_name: "#FFFFFF"}  # first column
+        full_color_map.update(dataset_year1_rainbows)  # metrics
+        
+        # Build a pretty map including first column
+        full_pretty_map = {location1_name: location1_name, **pretty}
+        
         display_colored_table_html(
-            table_df_reset,
-            color_map=dataset_year1_rainbows,  # use year1 colors for metric headers
-            pretty_map={**{f'{location1_name}': f'{location1_name}'}, **pretty}  # include first column in pretty map
+            table_df,
+            color_map=full_color_map,
+            pretty_map=full_pretty_map
         )
 
         plot_year_comparison_with_arrows(y1_values, y2_values, baseline_year, other_year, metrics, location1_name)
