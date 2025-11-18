@@ -249,8 +249,7 @@ def plot_year_comparison_with_arrows(y1_values, y2_values, label1, label2, metri
 # Main App Logic
 # ------------------------------
 st.title("Year-Year Comparison")
-st.info("Negative change (Δ < 0) indicates improvement; Positive change (Δ > 0) indicates worse outcome.")
-
+st.info(""" **Interpreting the EJI Score:** Negative change in EJI values (less than 0) indicate *a decrease in cumulative environmental and social burdens* — generally a good outcome. Positive change in EJI values (greater than 0) indicate *an increase in cumulative burdens and vulnerabilities* — generally a worse outcome. """) st.write("Use the dropdowns below to explore data for **New Mexico** or specific **counties**.") st.info("🔴 Rows highlighted in red represent areas with **Increased Concern/Burden (ΔEJI ≥ 0)**.") st.info("🟢 Rows highlighted in green represent areas with **Decreased Concern/Burden (ΔEJI ≤ 0)**.")
 # Select baseline and comparison year
 baseline_year = st.selectbox("Select baseline year:", AVAILABLE_YEARS, index=0)
 other_year_options = [y for y in AVAILABLE_YEARS if y != baseline_year]
