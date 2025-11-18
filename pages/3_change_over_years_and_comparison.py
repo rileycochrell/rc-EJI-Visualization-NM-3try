@@ -166,10 +166,9 @@ def weaponized_arrows_of_truth(metrics, y1_values, y2_values):
             y=(v1 + v2)/2,    # vertically centered along arrow
             xref="x",          # normal category axis
             yref="y",
-            text=diff_text,
+            text=f"<b>{diff_text}</b>",
             showarrow=False,
-            font=dict(color="black", size=12),
-            font-weight=bold
+            font=dict(color="black", size=12)
         ))
 
         # Move label slightly to the right of the bar by adjusting x with "xref='x domain'"
