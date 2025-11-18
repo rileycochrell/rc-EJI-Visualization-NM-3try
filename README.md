@@ -2,7 +2,7 @@
 ## Eng220GroupProject
 
 # 🌎 Environmental Justice Index Visualization (New Mexico)
-
+### A regional comparison of environmental, climate, and vulnerability indicators using the CDC EJI.
 
 [![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://rc-eji-visualization-nm-2try-dkymi6wuyrez96rtc6amzb.streamlit.app/)
 
