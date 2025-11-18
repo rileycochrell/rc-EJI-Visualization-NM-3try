@@ -159,7 +159,7 @@ def weaponized_arrows_of_truth(metrics, y1_values, y2_values):
         diff = v2 - v1
         diff_text = f"{diff:+.3f}"
 
-        color = "crimson" if diff > 0 else "lime"
+        color = "red" if diff > 0 else "lime"
 
         # Move label slightly to the right of the bar by adjusting x with "xref='x domain'"
         annotations.append(dict(
