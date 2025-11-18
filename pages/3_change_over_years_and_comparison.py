@@ -181,7 +181,7 @@ def weaponized_arrows_of_truth(metrics, y1_values, y2_values):
             # Position label to the right of arrow
             text=diff_text,
             font=dict(color=color, size=12),
-            xshift=-15 if diff > 0 else 15,     # move label to the right side
+            xshift=15,    # move label to the right side
             yshift=0       # centered vertically on arrow
         ))
 
