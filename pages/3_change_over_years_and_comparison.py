@@ -165,7 +165,7 @@ def weaponized_arrows_of_truth(metrics, y1_values, y2_values):
         # Move label slightly to the right of the bar by adjusting x with "xref='x domain'"
         annotations.append(dict(
             x=i - 0.1 - 0.15 if diff > 0 else i + 0.1 + 0.15,       # shift right relative to bar position
-            y=(v1 + v2)/2 + 0.2,    # vertically centered along arrow
+            y=(v1 + v2)/2 + 0.02,    # vertically centered along arrow
             xref="x",          # normal category axis
             yref="y",
             text=f"<b>{diff_text}</b>",
