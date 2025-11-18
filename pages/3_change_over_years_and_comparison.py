@@ -294,9 +294,11 @@ if selected_parameter=="County":
     if subset1.empty or subset2.empty:
         st.warning(f"No data for {selected_county} in one of the years")
     else:
+        
         y1_values = subset1[metrics].iloc[0]
         y2_values = subset2[metrics].iloc[0]
         location1_name = selected_county
+        
         plot_year_comparison_with_arrows(y1_values, y2_values, baseline_year, other_year, metrics, location1_name)
 else:
     nm_row1 = state_df1[state_df1["State"].str.strip().str.lower()=="new mexico"]
