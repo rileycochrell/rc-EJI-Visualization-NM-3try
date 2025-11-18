@@ -174,7 +174,7 @@ def weaponized_arrows_of_truth(metrics, y1_values, y2_values):
 
         # Actual arrow
         annotations.append(dict(
-            x=i,
+            x=metric_name,
             y=v2,
             ax=metric_name,
             ay=v1,
