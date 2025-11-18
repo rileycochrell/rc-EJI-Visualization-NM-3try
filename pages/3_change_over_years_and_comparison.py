@@ -8,7 +8,7 @@ import plotly.graph_objects as go
 # ------------------------------
 st.set_page_config(
     page_title="TEAM 23: Environmental Justice in New Mexico — 📈 Yearly Comparison",
-    page_icon="📈",
+    page_icon="🌎",
     layout="wide"
 )
 
@@ -45,6 +45,24 @@ with st.sidebar:
 # Years & Data Loading
 # ------------------------------
 AVAILABLE_YEARS = ["2022", "2024"]
+
+# ------------------------------
+# Normalize County Names (all years)
+# ------------------------------
+def normalize_county_names(df):
+    if "County" in df.columns:
+        df["County"] = (
+            df["County"]
+            .astype(str)
+            .str.strip()
+            .str.title()  # title case: ssandoval → Ssandoval
+        )
+        df["County"] = df["County"].apply(
+            lambda x: f"{x} County"
+            if not x.lower().endswith("county")
+            else x
+        )
+    return df
 
 @st.cache_data
 def load_data_for_year(year: str):
@@ -175,7 +193,7 @@ def plot_year_comparison_with_arrows(y1_values, y2_values, label1, label2, metri
         legend=dict(orientation="h", y=-0.2, x=0.5, xanchor="center"),
         annotations=arrow_annotations
     )
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width='stretch')
 
 # ------------------------------
 # Main App Logic
@@ -200,6 +218,10 @@ state_df1.rename(columns=rename_map, inplace=True)
 county_df1.rename(columns=rename_map, inplace=True)
 state_df2.rename(columns=rename_map, inplace=True)
 county_df2.rename(columns=rename_map, inplace=True)
+
+# Make county match
+county_df1 = normalize_county_names(county_df1)
+county_df2 = normalize_county_names(county_df2)
 
 metrics = BASE_METRICS.copy()
 for m in OPTIONAL_METRICS:
