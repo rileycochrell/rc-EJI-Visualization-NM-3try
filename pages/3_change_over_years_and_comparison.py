@@ -235,7 +235,7 @@ def plot_year_comparison_with_arrows(y1_values, y2_values, label1, label2, metri
 
     fig.update_layout(
         barmode="group",
-        title=f"EJI Metrics Comparison: {label1} vs {label2}",
+        title=f"EJI Metrics Comparison for {location1_name}: {label1} vs {label2}",
         xaxis=dict(title="Environmental Justice Index Metric"),
         yaxis=dict(range=[0,1], title="Percentile Rank Value"),
         annotations=weaponized_arrows_of_truth(metrics, y1_values, y2_values),
