@@ -223,7 +223,8 @@ def plot_year_comparison_with_arrows(y1_values, y2_values, label1, label2, metri
         yaxis=dict(
             tickmode="array",
             tickvals=list(range(len(metrics))),
-            ticktext=metric_names
+            ticktext=metric_names,
+            type="category"   # ← THIS FIXES THE ENTIRE ISSUE
         ),
         xaxis=dict(range=[0, 1]),
         barmode="group",
