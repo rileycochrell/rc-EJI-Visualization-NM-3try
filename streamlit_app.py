@@ -384,20 +384,37 @@ st.info("🔴 Rows highlighted in red represent areas with **Very High Concern/B
 # ------------------------------
 selected_year = st.selectbox("Select data year:", AVAILABLE_YEARS, index=0)
 
+# ------------------------------
+# Normalize County Names
+# ------------------------------
+def normalize_county_names(df):
+    if "County" in df.columns:
+        df["County"] = df["County"].astype(str).str.strip().str.title()
+        df["County"] = df["County"].apply(
+            lambda x: f"{x} County" if not x.lower().endswith("county") else x
+        )
+    return df
+
+# ------------------------------
+# Load and normalize data
+# ------------------------------
 try:
     state_df, county_df = load_data_for_year(selected_year)
 except Exception as e:
     st.error(f"Error loading data for {selected_year}: {e}")
     st.stop()
+
 state_df.rename(columns=rename_map, inplace=True)
 county_df.rename(columns=rename_map, inplace=True)
-metrics = BASE_METRICS.copy()
 
-# Only include optional metrics if the COUNTY file actually has them
-# (County is your primary dataset — so it must match)
+# Normalize county names
+county_df = normalize_county_names(county_df)
+
+metrics = BASE_METRICS.copy()
 for m in OPTIONAL_METRICS:
     if m in county_df.columns:
         metrics.append(m)
+
 counties = sorted(county_df["County"].dropna().unique())
 states = sorted(state_df["State"].dropna().unique())
 parameter1 = ["New Mexico", "County"]
