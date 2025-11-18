@@ -139,7 +139,7 @@ def display_colored_table_html(df, color_map, pretty_map, title=None):
     st.markdown(table_html, unsafe_allow_html=True)
 
 # ------------------------------
-# Beautiful, functional arrows hopefully...
+# Beautiful, functional arrows
 # ------------------------------
 def weaponized_arrows_of_truth(metrics, y1_values, y2_values):
     annotations = []
@@ -162,13 +162,12 @@ def weaponized_arrows_of_truth(metrics, y1_values, y2_values):
         # Colors still encode improvement/worsening
         color = "red" if v2 > v1 else "green"
 
-        
         annotations.append(
             dict(
-                x=i,          # x position = metric column
-                y=start_y,    # start of arrow at shorter bar
-                ax=i,
-                ay=end_y,     # end of arrow at taller bar
+                x=start_x,
+                y=i,
+                ax=end_x,
+                ay=i,
                 xref="x",
                 yref="y",
                 axref="x",
