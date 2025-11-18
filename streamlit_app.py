@@ -292,7 +292,8 @@ def plot_comparison(data1, data2, label1, label2):
         textfont=dict(size=10, color=fonts1),
         customdata=wingardium_leviOsa,
         hovertemplate="%{x}<br>%{customdata[0]}<br>%{customdata[1]}<extra></extra>",
-        name=label1
+        name=label1,
+        showlegend=False
     ))
 
     # Dataset 1 no-data overlay
@@ -324,7 +325,8 @@ def plot_comparison(data1, data2, label1, label2):
         textfont=dict(size=10, color=fonts2),
         customdata=wingardium_leviosAH,
         hovertemplate="%{x}<br>%{customdata[0]}<br>%{customdata[1]}<extra></extra>",
-        name=label2
+        name=label2,
+        showlegend=False
     ))
 
     # Dataset 2 no-data overlay
