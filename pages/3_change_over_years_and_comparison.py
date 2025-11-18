@@ -189,7 +189,8 @@ def weaponized_arrows_of_truth(metrics, y1_values, y2_values):
 # ------------------------------
 def plot_year_comparison_with_arrows(y1_values, y2_values, label1, label2, metrics):
     vals1 = np.array([np.nan if pd.isna(v) else float(v) for v in y1_values])
-    vals2 = np.array([np.nan if pd.isna(v) else float(v) else "No Data" for v in y2_values])
+    vals2 = np.array([np.nan if pd.isna(v) else float(v) for v in y2_values])
+
     metric_names = [pretty[m] for m in metrics]
     colors1 = [dataset_year1_rainbows[m] for m in metrics]
     colors2 = [dataset_year2_rainbows[m] for m in metrics]
