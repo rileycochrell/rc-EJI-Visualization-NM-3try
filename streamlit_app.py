@@ -381,7 +381,25 @@ def plot_comparison(data1, data2, label1, label2):
 
     st.plotly_chart(fig, width='stretch')
     st.caption("_Note: darker bars represent the first dataset; lighter bars represent the second dataset._")
+# ------------------------------
+# Analysis Functions
+# ------------------------------
+def run_test(df, group_column, target_column, threshold=0.75):
+    """Classifies tracts based on the Socioeconomic Vulnerability and performs T-test."""
+    df['Is_Low_Income_Tract'] = np.where(
+        df[group_column] >= threshold,
+        'Low-Income (High Burden)',
+        'Other Tracts (Lower Burden)'
+    )
+    low_income_ej = df[df['Is_Low_Income_Tract'] == 'Low-Income (High Burden)'][target_column].dropna()
+    other_ej = df[df['Is_Low_Income_Tract'] == 'Other Tracts (Lower Burden)'][target_column].dropna()
 
+    if low_income_ej.empty or other_ej.empty:
+        return None, None, None, None, df
+
+    t_stat, p_value = stats.ttest_ind(low_income_ej, other_ej, equal_var=False)
+    return low_income_ej.mean(), other_ej.mean(), t_stat, p_value, df
+    
 # ------------------------------
 # Main App Layout
 # ------------------------------
