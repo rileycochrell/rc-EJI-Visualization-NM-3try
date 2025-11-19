@@ -155,8 +155,20 @@ def display_colored_table_html(df, color_map, pretty_map, cell_color_map=None, t
             bg = cell_color if cell_color else "#FFFFFF"
 
             cell_text = (
-                "No Data" if pd.isna(val)
-                else (f"{val:.3f}" if isinstance(val, float) else val)
+                if pd.isna(val):
+                    cell_text = "No Data"
+                else:
+                    sign_val = f"{val:+.3f}"  # includes + for positive values
+                
+                    if val > 0:
+                        arrow = "↑"
+                    elif val < 0:
+                        arrow = "↓"
+                    else:
+                        arrow = ""  # or "" if you want nothing
+                
+                    cell_text = f"{sign_val} {arrow}"
+
             )
 
             body_html += (
