@@ -159,13 +159,24 @@ def display_colored_table_html(df, color_map, pretty_map, title=None):
     body_html = ""
     for _, row in df_display.iterrows():
         # if any numeric cell >= 0.76 (Very High), highlight whole row (existing behavior)
-        highlight = any([(isinstance(v, (int, float)) and v >= 0.76) for v in row])
-        row_style = "background-color:#ffb3b3;" if highlight else ""
-        body_html += f"<tr style='{row_style}'>"
+        # ----- Per-cell highlighting instead of whole row -----
+        body_html += "<tr>"
         for val in row:
-            cell_text = "No Data" if pd.isna(val) else (f"{val:.3f}" if isinstance(val, float) else val)
-            body_html += f"<td style='text-align:center;padding:4px;border:1px solid #ccc'>{cell_text}</td>"
+            if pd.isna(val):
+                cell_text = "No Data"
+                bg = "white"
+            else:
+                cell_text = f"{val:.3f}" if isinstance(val, float) else val
+                # highlight only this cell if >= 0.76
+                bg = "#ffb3b3" if (isinstance(val, (int, float)) and val >= 0.76) else "white"
+        
+            body_html += (
+                f"<td style='text-align:center;padding:4px;border:1px solid #ccc;"
+                f"background-color:{bg};'>{cell_text}</td>"
+            )
+        
         body_html += "</tr>"
+
 
     table_html = f"<table style='border-collapse:collapse;width:100%;border:1px solid black;'>{header_html}{body_html}</table>"
     st.markdown(table_html, unsafe_allow_html=True)
