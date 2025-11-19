@@ -154,15 +154,24 @@ def display_colored_table_html(df, color_map, pretty_map, cell_color_map=None, t
             # -------- Cell value formatting --------
             if pd.isna(val):
                 cell_text = "No Data"
-            else:
-                sign_val = f"{val:+.3f}"  # + or -
+            
+            elif isinstance(val, (int, float, np.number)):
+                # Numeric: format +0.123 and arrow
+                sign_val = f"{val:+.3f}"
+            
                 if val > 0:
                     arrow = "↑"
                 elif val < 0:
                     arrow = "↓"
                 else:
-                    arrow = ""
-                cell_text = f"{sign_val} {arrow}".strip()
+                    arrow = "→"
+            
+                cell_text = f"{sign_val} {arrow}"
+            
+            else:
+                # Non-numeric, fallback
+                cell_text = str(val)
+
 
             body_html += (
                 f"<td style='text-align:center;padding:4px;border:1px solid #ccc;"
