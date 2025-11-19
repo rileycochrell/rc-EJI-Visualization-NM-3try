@@ -104,6 +104,18 @@ dataset_year2_rainbows = {
 # ------------------------------
 # Helper Functions
 # ------------------------------
+def get_contrast_color(hex_color):
+    try:
+        rgb = tuple(int(hex_color.strip("#")[i:i+2], 16) for i in (0, 2, 4))
+    except Exception:
+        return "black"
+    brightness = (0.299*rgb[0] + 0.587*rgb[1] + 0.114*rgb[2])
+    return "black" if brightness > 150 else "white"
+
+# No Data font is always black because theme is locked to light
+def get_theme_color():
+    return "black"
+    
 def display_colored_table_html(df, color_map, pretty_map, cell_color_map=None, title=None):
     if isinstance(df, pd.Series):
         df = df.to_frame().T
