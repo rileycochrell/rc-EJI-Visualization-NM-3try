@@ -412,7 +412,7 @@ Lower EJI values (closer to 0) indicate *lower cumulative environmental and soci
 Higher EJI values (closer to 1) indicate *higher cumulative burdens and vulnerabilities* — generally a worse outcome.
 """)
 st.write("Use the dropdowns below to explore data for **New Mexico** or specific **counties**.")
-st.info("🔴 Rows highlighted in red represent areas with **Very High Concern/Burden (EJI ≥ 0.76)**.")
+st.info("🔴 Cells highlighted in red represent areas with **Very High Concern/Burden (EJI ≥ 0.76)**.")
 # ------------------------------
 # Move Year Selection Here
 # ------------------------------
