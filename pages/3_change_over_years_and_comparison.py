@@ -154,22 +154,21 @@ def display_colored_table_html(df, color_map, pretty_map, cell_color_map=None, t
 
             bg = cell_color if cell_color else "#FFFFFF"
 
+                        # Format cell text with + sign and arrow
             cell_text = (
                 if pd.isna(val):
                     cell_text = "No Data"
                 else:
-                    sign_val = f"{val:+.3f}"  # includes + for positive values
-                
+                    sign_val = f"{val:+.3f}"  # + for positive, - for negative
+    
                     if val > 0:
                         arrow = "↑"
                     elif val < 0:
                         arrow = "↓"
                     else:
-                        arrow = ""  # or "" if you want nothing
-                
-                    cell_text = f"{sign_val} {arrow}"
-
-            )
+                        arrow = ""
+    
+                    cell_text = f"{sign_val} {arrow}".strip()
 
             body_html += (
                 f"<td style='text-align:center;padding:4px;border:1px solid #ccc;"
