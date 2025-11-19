@@ -199,7 +199,7 @@ def weaponized_arrows_of_truth(metrics, y1_values, y2_values):
         v2 = float(v2)
 
         diff = v2 - v1
-        diff_text = f"{diff:+.3f} ↑" if diff > 0 else f"{diff:+.3f} ↓"
+        diff_text = f"+{diff:.3f} ↑" if diff > 0 else f"{diff:.3f} ↓"
 
         color = "red" if diff > 0 else "lime"
 
