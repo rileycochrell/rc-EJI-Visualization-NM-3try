@@ -154,21 +154,22 @@ def display_colored_table_html(df, color_map, pretty_map, cell_color_map=None, t
 
             bg = cell_color if cell_color else "#FFFFFF"
 
-                        # Format cell text with + sign and arrow
-            if pd.isna(val):
-                cell_text = "No Data"
-            else:
-                sign_val = f"+{val:.3f}"  # + for positive, - for negative
-
-                if val > 0:
-                    arrow = "↑"
-                elif val < 0:
-                    arrow = "↓"
+            cell_text = (
+                if pd.isna(val):
+                    cell_text = "No Data"
                 else:
-                    arrow = ""
+                    sign_val = f"{val:+.3f}"  # includes + for positive values
+                
+                    if val > 0:
+                        arrow = "↑"
+                    elif val < 0:
+                        arrow = "↓"
+                    else:
+                        arrow = ""  # or "" if you want nothing
+                
+                    cell_text = f"{sign_val} {arrow}"
 
-                cell_text = f"{sign_val} {arrow}".strip()
-
+            )
 
             body_html += (
                 f"<td style='text-align:center;padding:4px;border:1px solid #ccc;"
@@ -199,7 +200,7 @@ def weaponized_arrows_of_truth(metrics, y1_values, y2_values):
         v2 = float(v2)
 
         diff = v2 - v1
-        diff_text = f"+{diff:.3f} ↑" if diff > 0 else f"{diff:.3f} ↓"
+        diff_text = f"{diff:+.3f} ↑" if diff > 0 else f"{diff:+.3f} ↓"
 
         color = "red" if diff > 0 else "lime"
 
