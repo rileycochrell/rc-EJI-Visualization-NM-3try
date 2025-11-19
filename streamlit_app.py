@@ -467,7 +467,64 @@ parameter1 = ["New Mexico", "County", "Test"]
 st.caption("Note: If a state or county does not appear in the dropdown, it means the CDC dataset for the selected year did not include data for that location.")
 
 selected_parameter = st.selectbox("View EJI data for:", parameter1)
-if selected_parameter == "Test":
+
+if selected_parameter == "County":
+    selected_county = st.selectbox("Select a New Mexico County:", counties)
+    st.caption("Note: If a state or county does not appear in the dropdown, it means the CDC dataset for the selected year did not include data for that location.")
+    subset = county_df[county_df["County"] == selected_county]
+    if subset.empty:
+        st.warning(f"No data found for {selected_county}.")
+    else:
+        st.subheader(f"⚖️ EJI Data for {selected_county} — {selected_year}")
+        display_colored_table_html(subset, dataset1_rainbows, pretty)
+        county_values = subset.iloc[0]  # series with columns (we'll refer to metrics)
+        plot_single_chart(f"EJI Metrics — {selected_county} ({selected_year})", county_values, area_label=selected_county)
+
+        if st.checkbox("Compare with another dataset"):
+            compare_type = st.radio("Compare with:", ["State", "County"])
+            if compare_type == "State":
+                comp_state = st.selectbox("Select state:", states)
+                st.caption("Note: If a state or county does not appear in the dropdown, it means the CDC dataset for the selected year did not include data for that location.")
+
+                comp_row = state_df[state_df["State"] == comp_state]
+                if not comp_row.empty:
+                    comp_values = comp_row.iloc[0]
+                    plot_comparison(county_values, comp_values, selected_county, comp_state)
+            else:
+                comp_county = st.selectbox("Select county:", [c for c in counties if c != selected_county])
+                st.caption("Note: If a state or county does not appear in the dropdown, it means the CDC dataset for the selected year did not include data for that location.")
+                comp_row = county_df[county_df["County"] == comp_county]
+                if not comp_row.empty:
+                    comp_values = comp_row.iloc[0]
+                    plot_comparison(county_values, comp_values, selected_county, comp_county)
+
+elif selected_parameter == "New Mexico":
+    nm_row = state_df[state_df["State"].str.strip().str.lower() == "new mexico"]
+    if nm_row.empty:
+        st.warning("No New Mexico data found.")
+    else:
+        st.subheader(f"⚖️ New Mexico Statewide EJI Scores — {selected_year}")
+        display_colored_table_html(nm_row, dataset1_rainbows, pretty)
+        nm_values = nm_row.iloc[0]
+        plot_single_chart(f"EJI Metrics — New Mexico ({selected_year})", nm_values, area_label="New Mexico")
+
+        if st.checkbox("Compare with another dataset"):
+            compare_type = st.radio("Compare with:", ["State", "County"])
+            if compare_type == "State":
+                comp_state = st.selectbox("Select state:", [s for s in states if s.lower() != "new mexico"])
+                st.caption("Note: If a state or county does not appear in the dropdown, it means the CDC dataset for the selected year did not include data for that location.")
+                comp_row = state_df[state_df["State"] == comp_state]
+                if not comp_row.empty:
+                    comp_values = comp_row.iloc[0]
+                    plot_comparison(nm_values, comp_values, "New Mexico", comp_state)
+            else:
+                comp_county = st.selectbox("Select county:", counties)
+                st.caption("Note: If a state or county does not appear in the dropdown, it means the CDC dataset for the selected year did not include data for that location.")
+                comp_row = county_df[county_df["County"] == comp_county]
+                if not comp_row.empty:
+                    comp_values = comp_row.iloc[0]
+                    plot_comparison(nm_values, comp_values, "New Mexico", comp_county)
+else:
     st.header("🔬 Statistical Test: Low-Income vs. Other Tracts")
     st.markdown("""
         **Assumption:** Census Tracts with high **Social Vulnerability**
@@ -509,62 +566,6 @@ if selected_parameter == "Test":
     else:
         st.error("Cannot run test. Missing values in required columns.")
 
-if selected_parameter == "County":
-    selected_county = st.selectbox("Select a New Mexico County:", counties)
-    st.caption("Note: If a state or county does not appear in the dropdown, it means the CDC dataset for the selected year did not include data for that location.")
-    subset = county_df[county_df["County"] == selected_county]
-    if subset.empty:
-        st.warning(f"No data found for {selected_county}.")
-    else:
-        st.subheader(f"⚖️ EJI Data for {selected_county} — {selected_year}")
-        display_colored_table_html(subset, dataset1_rainbows, pretty)
-        county_values = subset.iloc[0]  # series with columns (we'll refer to metrics)
-        plot_single_chart(f"EJI Metrics — {selected_county} ({selected_year})", county_values, area_label=selected_county)
-
-        if st.checkbox("Compare with another dataset"):
-            compare_type = st.radio("Compare with:", ["State", "County"])
-            if compare_type == "State":
-                comp_state = st.selectbox("Select state:", states)
-                st.caption("Note: If a state or county does not appear in the dropdown, it means the CDC dataset for the selected year did not include data for that location.")
-
-                comp_row = state_df[state_df["State"] == comp_state]
-                if not comp_row.empty:
-                    comp_values = comp_row.iloc[0]
-                    plot_comparison(county_values, comp_values, selected_county, comp_state)
-            else:
-                comp_county = st.selectbox("Select county:", [c for c in counties if c != selected_county])
-                st.caption("Note: If a state or county does not appear in the dropdown, it means the CDC dataset for the selected year did not include data for that location.")
-                comp_row = county_df[county_df["County"] == comp_county]
-                if not comp_row.empty:
-                    comp_values = comp_row.iloc[0]
-                    plot_comparison(county_values, comp_values, selected_county, comp_county)
-
-else:
-    nm_row = state_df[state_df["State"].str.strip().str.lower() == "new mexico"]
-    if nm_row.empty:
-        st.warning("No New Mexico data found.")
-    else:
-        st.subheader(f"⚖️ New Mexico Statewide EJI Scores — {selected_year}")
-        display_colored_table_html(nm_row, dataset1_rainbows, pretty)
-        nm_values = nm_row.iloc[0]
-        plot_single_chart(f"EJI Metrics — New Mexico ({selected_year})", nm_values, area_label="New Mexico")
-
-        if st.checkbox("Compare with another dataset"):
-            compare_type = st.radio("Compare with:", ["State", "County"])
-            if compare_type == "State":
-                comp_state = st.selectbox("Select state:", [s for s in states if s.lower() != "new mexico"])
-                st.caption("Note: If a state or county does not appear in the dropdown, it means the CDC dataset for the selected year did not include data for that location.")
-                comp_row = state_df[state_df["State"] == comp_state]
-                if not comp_row.empty:
-                    comp_values = comp_row.iloc[0]
-                    plot_comparison(nm_values, comp_values, "New Mexico", comp_state)
-            else:
-                comp_county = st.selectbox("Select county:", counties)
-                st.caption("Note: If a state or county does not appear in the dropdown, it means the CDC dataset for the selected year did not include data for that location.")
-                comp_row = county_df[county_df["County"] == comp_county]
-                if not comp_row.empty:
-                    comp_values = comp_row.iloc[0]
-                    plot_comparison(nm_values, comp_values, "New Mexico", comp_county)
 
 st.divider()
 st.caption("Data Source: CDC Environmental Justice Index | Visualization by Riley Cochrell")
