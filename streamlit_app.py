@@ -479,7 +479,7 @@ if selected_parameter == "County":
                     comp_values = comp_row.iloc[0]
                     plot_comparison(county_values, comp_values, selected_county, comp_county)
 
-elif:
+elif
     nm_row = state_df[state_df["State"].str.strip().str.lower() == "new mexico"]
     if nm_row.empty:
         st.warning("No New Mexico data found.")
