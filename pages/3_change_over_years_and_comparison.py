@@ -158,7 +158,7 @@ def display_colored_table_html(df, color_map, pretty_map, cell_color_map=None, t
             if pd.isna(val):
                 cell_text = "No Data"
             else:
-                sign_val = f"{val:+.3f}"  # + for positive, - for negative
+                sign_val = f"+{val:.3f}"  # + for positive, - for negative
 
                 if val > 0:
                     arrow = "↑"
