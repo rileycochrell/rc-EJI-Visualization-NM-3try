@@ -37,7 +37,7 @@ div[data-testid="stLogoSpacer"]::after {
 with st.sidebar:
     st.write("---")
     st.page_link("streamlit_app.py", label="EJI Visualization", icon="📊")
-    st.page_link("pages/3_change_over_years_and_comparison.py", label="EJI – Change Over Years", icon="📈")
+    st.page_link("pages/3_change_over_years_and_comparison.py", label="EJI Metrics Comparison", icon="📈")
     st.page_link("pages/1_What_Goes_Into_EJI.py", label="What Goes Into the EJI?", icon="🧩")
     st.page_link("pages/2_EJI_Scale_and_Categories.py", label="What Does the EJI Mean?", icon="🌡️")
 
@@ -309,7 +309,7 @@ def compute_change_row(y1_values, y2_values, metrics):
 # ------------------------------
 # Main App Logic
 # ------------------------------
-st.title("Year-Year Comparison")
+st.title("📈 Environmental Justice Index Comparison Across Years")
 st.info(""" **Interpreting the EJI Score:** 
 Negative change in EJI values (less than 0) indicate *a decrease in cumulative environmental and social burdens* — generally a good outcome.
 Positive change in EJI values (greater than 0) indicate *an increase in cumulative burdens and vulnerabilities* — generally a worse outcome. """)
@@ -360,6 +360,7 @@ if selected_parameter=="County":
         y1_values = subset1[metrics].iloc[0]
         y2_values = subset2[metrics].iloc[0]
         location1_name = selected_county
+        st.subheader(f"EJI Data Comparison Table for {location1_name}: {baseline_year} — {other_year}")
         # ---------------- Table ----------------
         # Build table with first column = location name, rows = years
         table_df = pd.DataFrame(
@@ -370,7 +371,6 @@ if selected_parameter=="County":
             columns=[location1_name] + metrics
         )
         
-        st.markdown(f"### ⚖️ {location1_name} – Year Comparison Table")
         
         # Build a color map including first column (default white)
         full_color_map = {location1_name: "#FFFFFF"}  # first column
@@ -384,7 +384,7 @@ if selected_parameter=="County":
             color_map=full_color_map,
             pretty_map=full_pretty_map
         )
-
+        st.subheader(f"EJI Data Comparison Chart for {location1_name}: {baseline_year} — {other_year}")
         plot_year_comparison_with_arrows(y1_values, y2_values, baseline_year, other_year, metrics, location1_name)
         # ---------------- Change Table ----------------
         change_values = compute_change_row(y1_values, y2_values, metrics)
@@ -394,7 +394,7 @@ if selected_parameter=="County":
             columns=metrics
         )
         
-        st.markdown(f"### Change from {baseline_year} to {other_year}")
+        st.subheader(f"Change in EJI Scores for {location1_name} from {baseline_year} to {other_year}")
         
         # Column headers = rainbow colors (dataset_year1)
         change_header_colors = {m: dataset_year1_rainbows[m] for m in metrics}
@@ -433,6 +433,7 @@ else:
         y1_values = nm_row1[metrics].iloc[0]
         y2_values = nm_row2[metrics].iloc[0]
         location1_name = "New Mexico"
+        st.subheader(f"EJI Data Comparison Table for {location1_name}: {baseline_year} — {other_year}")
         # ---------------- Table ----------------
         # Build table with first column = location name, rows = years
         table_df = pd.DataFrame(
@@ -443,7 +444,7 @@ else:
             columns=[location1_name] + metrics
         )
         
-        st.markdown(f"### {location1_name} – Year Comparison Table")
+        st.subheader(f"⚖️ EJI Data for {location1_name}: {baseline_year} — {other_year}")
         
         # Build a color map including first column (default white)
         full_color_map = {location1_name: "#FFFFFF"}  # first column
@@ -457,7 +458,7 @@ else:
             color_map=full_color_map,
             pretty_map=full_pretty_map
         )
-
+        st.subheader(f"EJI Data Comparison Chart for {location1_name}: {baseline_year} — {other_year}")
         plot_year_comparison_with_arrows(y1_values, y2_values, baseline_year, other_year, metrics, location1_name)
        # ---------------- Change Table ----------------
         change_values = compute_change_row(y1_values, y2_values, metrics)
@@ -467,7 +468,7 @@ else:
             columns=metrics
         )
         
-        st.markdown(f"### Change from {baseline_year} to {other_year}")
+        st.subheader(f"Change in EJI Scores for {location1_name} from {baseline_year} to {other_year}")
         
         # Column headers = rainbow colors (dataset_year1)
         change_header_colors = {m: dataset_year1_rainbows[m] for m in metrics}
