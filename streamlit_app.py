@@ -443,7 +443,7 @@ def normalize_county_names(df):
 # Load and normalize data
 # ------------------------------
 try:
-    state_df, county_df = load_data_for_year(selected_year)
+    state_df, county_df, tract_df = load_data_for_year(selected_year)
 except Exception as e:
     st.error(f"Error loading data for {selected_year}: {e}")
     st.stop()
