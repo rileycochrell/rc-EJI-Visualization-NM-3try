@@ -266,7 +266,7 @@ def plot_single_chart(title, data_values, area_label=None):
         template="plotly_white"
     )
 
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width='stretch')
 
 def plot_comparison(data1, data2, label1, label2):
     # Both data1 and data2: pandas Series (metric values). We show grouped bars.
@@ -378,7 +378,7 @@ def plot_comparison(data1, data2, label1, label2):
         template="plotly_white"
     )
 
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width='stretch')
     st.caption("_Note: darker bars represent the first dataset; lighter bars represent the second dataset._")
 
 # ------------------------------
