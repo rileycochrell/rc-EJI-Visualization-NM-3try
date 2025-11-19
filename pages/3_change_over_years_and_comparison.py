@@ -261,6 +261,18 @@ def plot_year_comparison_with_arrows(y1_values, y2_values, label1, label2, metri
     )
 
     st.plotly_chart(fig, width="stretch")
+    
+def compute_change_row(y1_values, y2_values, metrics):
+    """Returns a dict containing Δ values for each metric."""
+    change = {}
+    for m in metrics:
+        v1 = y1_values.get(m, np.nan)
+        v2 = y2_values.get(m, np.nan)
+        if pd.isna(v1) or pd.isna(v2):
+            change[m] = np.nan
+        else:
+            change[m] = float(v2) - float(v1)
+    return change
 
 # ------------------------------
 # Main App Logic
@@ -341,6 +353,26 @@ if selected_parameter=="County":
         )
 
         plot_year_comparison_with_arrows(y1_values, y2_values, baseline_year, other_year, metrics, location1_name)
+        # ---------------- Change Table ----------------
+        change_values = compute_change_row(y1_values, y2_values, metrics)
+        
+        change_df = pd.DataFrame(
+            data=[[change_values[m] for m in metrics]],
+            columns=[f"Δ {pretty[m]}" for m in metrics]
+        )
+        
+        st.markdown(f"### Change from {baseline_year} to {other_year}")
+        
+        # Build pretty + color maps for change table
+        change_color_map = {f"Δ {pretty[m]}": ("#ffcccc" if change_values[m] > 0 else "#ccffcc") for m in metrics}
+        change_pretty_map = {f"Δ {pretty[m]}": f"Δ {pretty[m]}" for m in metrics}
+        
+        display_colored_table_html(
+            change_df,
+            color_map=change_color_map,
+            pretty_map=change_pretty_map
+        )
+
 else:
     nm_row1 = state_df1[state_df1["State"].str.strip().str.lower()=="new mexico"]
     nm_row2 = state_df2[state_df2["State"].str.strip().str.lower()=="new mexico"]
@@ -376,6 +408,25 @@ else:
         )
 
         plot_year_comparison_with_arrows(y1_values, y2_values, baseline_year, other_year, metrics, location1_name)
+        # ---------------- Change Table ----------------
+        change_values = compute_change_row(y1_values, y2_values, metrics)
+        
+        change_df = pd.DataFrame(
+            data=[[change_values[m] for m in metrics]],
+            columns=[f"Δ {pretty[m]}" for m in metrics]
+        )
+        
+        st.markdown(f"### Change from {baseline_year} to {other_year}")
+        
+        # Build pretty + color maps for change table
+        change_color_map = {f"Δ {pretty[m]}": ("#ffcccc" if change_values[m] > 0 else "#ccffcc") for m in metrics}
+        change_pretty_map = {f"Δ {pretty[m]}": f"Δ {pretty[m]}" for m in metrics}
+        
+        display_colored_table_html(
+            change_df,
+            color_map=change_color_map,
+            pretty_map=change_pretty_map
+        )  
 
 st.divider()
 st.caption("Data Source: CDC Environmental Justice Index | Visualization by Riley Cochrell")
