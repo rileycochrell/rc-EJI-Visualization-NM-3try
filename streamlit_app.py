@@ -443,7 +443,7 @@ for m in OPTIONAL_METRICS:
 counties = sorted(county_df["County"].dropna().unique())
 states = sorted(state_df["State"].dropna().unique())
 
-parameter1 = ["New Mexico", "County"]
+parameter1 = ["New Mexico", "County", "Test"]
 
 st.caption("Note: If a state or county does not appear in the dropdown, it means the CDC dataset for the selected year did not include data for that location.")
 
