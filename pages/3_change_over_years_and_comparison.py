@@ -360,7 +360,7 @@ if selected_parameter=="County":
         y1_values = subset1[metrics].iloc[0]
         y2_values = subset2[metrics].iloc[0]
         location1_name = selected_county
-        st.subheader(f"EJI Data Comparison Table for {location1_name}: {baseline_year} — {other_year}")
+        st.subheader(f"⚖️ EJI Data Comparison for {location1_name}: {baseline_year} — {other_year}")
         # ---------------- Table ----------------
         # Build table with first column = location name, rows = years
         table_df = pd.DataFrame(
@@ -384,7 +384,7 @@ if selected_parameter=="County":
             color_map=full_color_map,
             pretty_map=full_pretty_map
         )
-        st.subheader(f"EJI Data Comparison Chart for {location1_name}: {baseline_year} — {other_year}")
+        
         plot_year_comparison_with_arrows(y1_values, y2_values, baseline_year, other_year, metrics, location1_name)
         # ---------------- Change Table ----------------
         change_values = compute_change_row(y1_values, y2_values, metrics)
@@ -433,7 +433,7 @@ else:
         y1_values = nm_row1[metrics].iloc[0]
         y2_values = nm_row2[metrics].iloc[0]
         location1_name = "New Mexico"
-        st.subheader(f"EJI Data Comparison Table for {location1_name}: {baseline_year} — {other_year}")
+        
         # ---------------- Table ----------------
         # Build table with first column = location name, rows = years
         table_df = pd.DataFrame(
@@ -444,7 +444,7 @@ else:
             columns=[location1_name] + metrics
         )
         
-        st.subheader(f"⚖️ EJI Data for {location1_name}: {baseline_year} — {other_year}")
+        st.subheader(f"⚖️ EJI Data Comparison for {location1_name}: {baseline_year} — {other_year}")
         
         # Build a color map including first column (default white)
         full_color_map = {location1_name: "#FFFFFF"}  # first column
