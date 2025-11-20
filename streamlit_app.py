@@ -75,7 +75,7 @@ def load_data_for_year(year: str):
     
     state_df = pd.read_csv(state_path)
     county_df = pd.read_csv(county_path)
-    tract_df = pd.read_csv(tract_path)
+    tract_df = pd.read_csv(tract_path, dtype={'GEOID': str, 'TRACT_FIPS': str})
     
     return state_df, county_df, tract_df
 
