@@ -554,8 +554,8 @@ else:
             )
 
         with col_t:
-            st.metric("T-Statistic", f"{t_stat:.2f}"),  help="Measures the magnitude of difference between the groups' means.")
-            st.metric("P-Value", f"{p_value:.4e}"),  help="P-value < 0.05 indicates the difference is statistically significant.")
+            st.metric("T-Statistic", f"{t_stat:.2f}",  help="Measures the magnitude of difference between the groups' means.")
+            st.metric("P-Value", f"{p_value:.4e}",  help="P-value < 0.05 indicates the difference is statistically significant.")
 
         st.write("---")
         if p_value < 0.05:
