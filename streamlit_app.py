@@ -411,7 +411,7 @@ st.info("""
 Lower EJI values (closer to 0) indicate *lower cumulative environmental and social burdens* — generally a good outcome.  
 Higher EJI values (closer to 1) indicate *higher cumulative burdens and vulnerabilities* — generally a worse outcome.
 """)
-st.write("Use the dropdowns below to explore data for **New Mexico** or specific **counties**.")
+st.write("Use the dropdowns below to explore data for **New Mexico** or specific **counties**, or view the final **Test** results.")
 st.info("🔴 Cells highlighted in red represent areas with **Very High Concern/Burden (EJI ≥ 0.76)**.")
 # ------------------------------
 # Move Year Selection Here
@@ -529,8 +529,8 @@ else:
     st.subheader("🔬 Statistical Test: Low-Income vs. Other Tracts")
     st.markdown("""
         **Assumption:** Census Tracts with high **Social Vulnerability**
-        (proxy for low-income, defined as ≥ 0.75 nationally) will have
-        significantly higher **Overall EJI scores**.
+        (our proxy for low-income, defined as ≥ 0.75 nationally) will have a
+        significantly higher **Overall EJI score**.
     """)
 
     mean_low_income, mean_other, t_stat, p_value, _ = run_test(
@@ -542,7 +542,6 @@ else:
 
     if mean_low_income is not None:
         col_mean, col_t = st.columns(2)
-
         with col_mean:
             st.metric(
                 "Mean Overall EJI (Low-Income Tracts)",
@@ -555,18 +554,17 @@ else:
             )
 
         with col_t:
-            st.metric("T-Statistic", f"{t_stat:.2f}")
-            st.metric("P-Value", f"{p_value:.4e}")
+            st.metric("T-Statistic", f"{t_stat:.2f}"),  help="Measures the magnitude of difference between the groups' means.")
+            st.metric("P-Value", f"{p_value:.4e}"),  help="P-value < 0.05 indicates the difference is statistically significant.")
 
         st.write("---")
         if p_value < 0.05:
-            st.success("The difference **is statistically significant** (p < 0.05). This confirms that socially vulnerable communities in NM face disproportionately higher environmental burdens.")
+            st.success(f"**Conclusion:** The difference **is statistically significant** (p < 0.05). This confirms that socially vulnerable communities in NM face disproportionately higher environmental burdens.")
         else:
-            st.warning(f"The difference is **not** statistically significant (p = {p_value:.4f}).")
+            st.warning(f"**Conclusion:** The difference is **not** statistically significant (p = {p_value:.4f}).")
 
     else:
-        st.error("Cannot run test. Missing values in required columns.")
-
+        st.error(f"Cannot run test. Check your Census Tract data file for 'RPL_SVM' and 'RPL_EJI' columns.")
 
 st.divider()
 st.caption("Data Source: CDC Environmental Justice Index | Visualization by Riley Cochrell")
