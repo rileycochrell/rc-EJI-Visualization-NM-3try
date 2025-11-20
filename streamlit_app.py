@@ -140,7 +140,12 @@ def get_contrast_color(hex_color: str):
 # Lock "No Data" label font color to black because app theme is locked to light
 def no_data_label_color():
     return "black"
-
+def normalize_county_names(df):
+    if "County" in df.columns:
+        df["County"] = df["County"].astype(str).str.strip().str.title()
+        df["County"] = df["County"].apply(
+            lambda x: f"{x} County" if not x.lower().endswith("county") else x)
+        return df
 def display_colored_table_html(df, color_map, pretty_map, title=None):
     """Render an HTML table with header cell colors from color_map and data cells.
        Currently highlights entire row if any cell >= 0.76; if you want per-cell highlighting,
@@ -387,6 +392,7 @@ def plot_comparison(data1, data2, label1, label2):
     st.caption("_Note: darker bars represent the first dataset; lighter bars represent the second dataset._")
 def run_test(df, group_column, target_column, threshold=0.75):
     """Classifies tracts based on the Socioeconomic Vulnerability and performs T-test."""
+    df = df[df[target_column] >= 0]
     df['Is_Low_Income_Tract'] = np.where(
         df[group_column] >= threshold,
         'Low-Income (High Burden)',
@@ -452,7 +458,18 @@ except Exception as e:
 state_df.rename(columns=rename_map, inplace=True)
 county_df.rename(columns=rename_map, inplace=True)
 
+
 # Normalize county names
+
+if 'RPL_EJI' not in tract_df.columns:
+    tract_df.rename(columns={
+        "RPL_THEME_EJI": "RPL_EJI",
+        "RPL_THEME_EBM": "RPL_EBM",
+        "RPL_THEME_SVM": "RPL_SVM",
+        "RPL_THEME_HVM": "RPL_HVM",
+        "RPL_THEME_CBM": "RPL_CBM",
+        "RPL_THEME_EJI_CBM": "RPL_EJI_CBM",
+    }, inplace=True)
 county_df = normalize_county_names(county_df)
 
 metrics = BASE_METRICS.copy()
